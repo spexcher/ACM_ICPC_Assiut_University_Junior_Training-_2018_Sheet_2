@@ -177,46 +177,7 @@ signed main()
 
 void solve()
 {
-  int n, x, i;
+  int n;
   cin >> n;
-  bool f = 1;
-  int spec = 3;
-  for (i = 1; i <= n; i++)
-  {
-    cin >> x;
-    if (x != spec)
-    {
-      if (x == 1)
-      {
-        if (spec == 2)
-          spec = 3;
-        else
-          spec = 2;
-      }
-      else if (x == 2)
-      {
-        if (spec == 1)
-          spec = 3;
-        else
-          spec = 1;
-      }
-      else
-      {
-        if (spec == 1)
-          spec = 2;
-        else
-          spec = 1;
-      }
-    }
-    else
-    {
-      f = 0;
-      break;
-    }
-  }
-
-  if (f == 1)
-    py;
-  else
-    pn;
+  print(n * (n + 1) / 2);
 }

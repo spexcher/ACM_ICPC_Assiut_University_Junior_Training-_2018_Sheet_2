@@ -167,7 +167,7 @@ signed main()
 {
   fast_io;
   int t = 1;
-  //cin >> t;
+  // cin >> t;
   Fo(i, 1, t)
   { // eprintf("--- Case #%lld start ---\n", i);eprintf("Case #%lld: ", i);solve();eprintf("--- Case #%lld end ---\n", i);eprintf("time = %.5lf\n", getCurrentTime());eprintf("++++++++++++++++++++\n");
     solve();
@@ -183,16 +183,33 @@ void solve()
   cin >> v;
   if (n == 1)
   {
-    py;
+    if (v[0] == 3)
+      pn;
+    else
+      py;
     return;
   }
-  for (int i = 0; i < n - 1; i += 2)
+  if (v[0] == 3)
   {
-    if (v[i] != v[i + 1])
+    pn;
+    return;
+  }
+
+  bool flag = false;
+  int win = v[0];
+  int spect = 3;
+  for (int i = 1; i < n; i++)
+  {
+    int sum = 6 - (v[i - 1] + spect);
+    spect = sum;
+    if (sum == v[i])
     {
-      pn;
-      return;
+      flag = true;
+      break;
     }
   }
-  py;
+  if (flag)
+    pn;
+  else
+    py;
 }

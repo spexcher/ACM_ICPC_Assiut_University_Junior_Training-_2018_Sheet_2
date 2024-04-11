@@ -189,3 +189,18 @@ void solve()
   }
   pm;
 }
+
+
+Length is even
+case 1:
+number of zeroes == number of ones
+
+n=11
+
+1 0
+
+
+
+
+000000 11111
+

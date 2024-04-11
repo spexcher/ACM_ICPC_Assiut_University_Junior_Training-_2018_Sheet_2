@@ -81,7 +81,7 @@ using max_heap = priority_queue<T>;
 #define pl cout << "\n"
 #define nl "\n"
 #define sp " "
-#define print(x) cout << (x) << "\n"
+#define print(x) cout << x << "\n"
 #define deb(x) cout << #x << "=" << x << endl
 #define upper(s1) transform(s1.begin(), s1.end(), s1.begin(), ::toupper)
 #define lower(s1) transform(s1.begin(), s1.end(), s1.begin(), ::tolower)
@@ -159,7 +159,121 @@ template <class Fun>
 decltype(auto) y_combinator(Fun &&fun) { return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun)); }
 
 //---------------------------------------------Snippet area---------------------------------------------------
+struct MInt
+{
+  using i64 = long long;
+  static constexpr i64 P = 1000000007; // 1000000007 1000000009 998244353 2147483647
+  int x;
+  constexpr MInt() : x{} {}
+  constexpr MInt(i64 x) : x{norm(x % P)} {}
 
+  constexpr int norm(int x) const
+  {
+    if (x < 0)
+    {
+      x += P;
+    }
+    if (x >= P)
+    {
+      x -= P;
+    }
+    return x;
+  }
+
+  constexpr int val() const
+  {
+    return x;
+  }
+  explicit constexpr operator int() const
+  {
+    return x;
+  }
+  constexpr MInt operator-() const
+  {
+    MInt res;
+    res.x = norm(P - x);
+    return res;
+  }
+  friend constexpr MInt power(MInt base, i64 exp)
+  {
+    MInt res(1);
+    while (exp)
+    {
+      if (exp & 1)
+        res *= base;
+      base *= base;
+      exp >>= 1;
+    }
+    return res;
+  }
+  constexpr MInt inv() const
+  {
+    assert(x != 0);
+    return power(*this, P - 2);
+  }
+  constexpr MInt &operator*=(MInt rhs)
+  {
+    x = 1LL * x * rhs.x % P;
+    return *this;
+  }
+  constexpr MInt &operator+=(MInt rhs)
+  {
+    x = norm(x + rhs.x);
+    return *this;
+  }
+  constexpr MInt &operator-=(MInt rhs)
+  {
+    x = norm(x - rhs.x);
+    return *this;
+  }
+  constexpr MInt &operator/=(MInt rhs)
+  {
+    return *this *= rhs.inv();
+  }
+  friend constexpr MInt operator*(MInt lhs, MInt rhs)
+  {
+    MInt res = lhs;
+    res *= rhs;
+    return res;
+  }
+  friend constexpr MInt operator+(MInt lhs, MInt rhs)
+  {
+    MInt res = lhs;
+    res += rhs;
+    return res;
+  }
+  friend constexpr MInt operator-(MInt lhs, MInt rhs)
+  {
+    MInt res = lhs;
+    res -= rhs;
+    return res;
+  }
+  friend constexpr MInt operator/(MInt lhs, MInt rhs)
+  {
+    MInt res = lhs;
+    res /= rhs;
+    return res;
+  }
+  friend istream &operator>>(istream &iss, MInt &a)
+  {
+    i64 v;
+    iss >> v;
+    a = MInt(v);
+    return iss;
+  }
+  friend ostream &operator<<(ostream &os, const MInt &a)
+  {
+    return os << a.val();
+  }
+  friend constexpr bool operator==(MInt lhs, MInt rhs)
+  {
+    return lhs.val() == rhs.val();
+  }
+  friend constexpr bool operator!=(MInt lhs, MInt rhs)
+  {
+    return lhs.val() != rhs.val();
+  }
+};
 //---------------------------------------------End Snippet area-----------------------------------------------
 #define int long long
 void solve();
@@ -167,19 +281,61 @@ signed main()
 {
   fast_io;
   int t = 1;
- // cin >> t;
+  // cin >> t;
   Fo(i, 1, t)
   { // eprintf("--- Case #%lld start ---\n", i);eprintf("Case #%lld: ", i);solve();eprintf("--- Case #%lld end ---\n", i);eprintf("time = %.5lf\n", getCurrentTime());eprintf("++++++++++++++++++++\n");
     solve();
   }
   return 0;
 }
+int nCr(int n, int r)
+{
+  if (r > n)
+    return 0;
+  // p holds the value of n*(n-1)*(n-2)...,
+  // k holds the value of r*(r-1)...
+  long long p = 1, k = 1;
 
+  // C(n, r) == C(n, n-r),
+  // choosing the smaller value
+  if (n - r < r)
+    r = n - r;
+
+  if (r != 0)
+  {
+    while (r)
+    {
+      p *= n;
+      k *= r;
+
+      // gcd of p, k
+      long long m = __gcd(p, k);
+
+      // dividing by gcd, to simplify
+      // product division by their gcd
+      // saves from the overflow
+      p /= m;
+      k /= m;
+
+      n--;
+      r--;
+    }
+
+    // k should be simplified to 1
+    // as C(n, r) is a natural number
+    // (denominator should be 1 ) .
+  }
+
+  else
+    p = 1;
+
+  // if our approach is correct p = ans and k =1
+  return p;
+}
 void solve()
 {
-  lld x;
-  cin>>x;
-  x/=PI;
-  x=sqrtl(x);
-  print(2*x);
+  int n, m;
+  cin >> n >> m;
+  int maximum = nCr(n - m, 2);
+  int minimum = nCr((n / m), 2) * m;
 }
